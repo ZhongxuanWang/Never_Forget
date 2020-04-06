@@ -1,8 +1,22 @@
 from flask import Flask, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///list.db'
+db = SQLAlchemy(app)
+
+
+class TODO(db.Model):
+    id = db.Column(db.Integer)
+    content = db.Column(db.String(500), nullable=False)
+    time_created = db.Column(db.DateTime, default=datetime.now())
+
+    def __repr__(self):
+        return self.id
+
+    def __str__(self):
+        return self.id
 
 
 @app.route('/')

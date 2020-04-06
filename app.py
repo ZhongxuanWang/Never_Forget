@@ -8,7 +8,7 @@ db = SQLAlchemy(app)
 
 
 class TODO(db.Model):
-    id = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
     time_created = db.Column(db.DateTime, default=datetime.now())
 

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -19,9 +19,26 @@ class TODO(db.Model):
         return self.id
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    if request.method == 'POST':
+        return "hello38"
+    elif request.method == 'GET':
+        return render_template("index.html")
+    else:
+        return "Invalid method: " + request.method
+
+
+@app.route('/addTask', methods=['POST'])
+def addTask():
+    if request.method == 'POST':
+        return redirect('/')
+
+
+@app.route('/rmTask', methods=['POST'])
+def rmTask():
+    if request.method == 'POST':
+        return redirect('/')
 
 
 if __name__ == '__main__':

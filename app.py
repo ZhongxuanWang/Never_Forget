@@ -32,11 +32,32 @@ def index():
 @app.route('/addTask', methods=['POST'])
 def addTask():
     if request.method == 'POST':
-        return redirect('/')
+        content = request.form['content']
+        task = TODO(content=content)
+
+        # Add to database
+        try:
+            db.session.add(task)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return redirect('/issues/unable_to_add.html')
 
 
 @app.route('/rmTask', methods=['GET'])
 def rmTask():
+    if request.method == 'GET':
+        return redirect('/')
+
+
+@app.route('/editTask', methods=['GET'])
+def editTask():
+    if request.method == 'GET':
+        return redirect('/')
+
+
+@app.route('/cmTask', methods=['GET'])
+def cmTask():
     if request.method == 'GET':
         return redirect('/')
 

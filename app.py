@@ -37,7 +37,7 @@ def addTask():
 
 @app.route('/rmTask', methods=['POST'])
 def rmTask():
-    if request.method == 'POST':
+    if request.method == 'GET':
         return redirect('/')
 
 

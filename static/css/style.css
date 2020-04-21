@@ -1,9 +1,15 @@
 body {
-    margin: 0;
+    margin: 5px;
     font-family: sans-serif;
     font-size: medium;
     color: black;
     background-color: aliceblue;
+}
+
+form {
+    margin:5px;
+    padding:5px;
+    display:inline;
 }
 
 #duetoday {
@@ -15,6 +21,11 @@ body {
 
 #todo {
     color: orange;
+    font-weight: bold;
+}
+
+#new {
+    color: red;
     font-weight: bold;
 }
 

@@ -42,7 +42,7 @@ def addTask():
             db.session.commit()
             return redirect('/')
         except:
-            return redirect('/issues/unable_to_add.html')
+            return render_template('issues/unable_to.html', issue="add the task")
 
 
 @DeprecationWarning
@@ -52,16 +52,24 @@ def rmTask(): pass
 #         return redirect('/')
 
 
-@app.route('/editTask', methods=['GET'])
-def editTask():
+@app.route('/editTask/<int:id>', methods=['GET'])
+def editTask(id):
     if request.method == 'GET':
         return redirect('/')
 
 
-@app.route('/cmTask', methods=['GET'])
-def cmTask():
+@app.route('/cmTask/<int:id>', methods=['GET'])
+def cmTask(id):
     if request.method == 'GET':
         return redirect('/')
+    task = TODO.query.get_or_404(id)
+
+    try:
+        db.session.delete(task)
+        db.session.commit()
+        return redirect('/')
+    except:
+        return render_template('issues/unable_to.html', issue='complete the task')
 
 
 if __name__ == '__main__':

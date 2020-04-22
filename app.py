@@ -45,10 +45,11 @@ def addTask():
             return redirect('/issues/unable_to_add.html')
 
 
-@app.route('/rmTask/<int:id>', methods=['GET'])
-def rmTask():
-    if request.method == 'GET':
-        return redirect('/')
+@DeprecationWarning
+# @app.route('/rmTask/<int:id>', methods=['GET'])
+def rmTask(): pass
+#     if request.method == 'GET':
+#         return redirect('/')
 
 
 @app.route('/editTask', methods=['GET'])

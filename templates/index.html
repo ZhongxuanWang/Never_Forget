@@ -19,16 +19,18 @@
                 <th>Actions</th>
 
             </tr>
-
-            <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <a href="/cmTask">Complete</a> <br>
-                    <a href="/rmTask">Remove</a><br>
-                    <a href="/editTask">Edit</a><br>
-                </td>
-            </tr>
+{#        The language here is called jinja btw#}
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.content }}</td>
+                    <td>{{ task.time_created }}</td>
+                    <td>
+                        <a href="/cmTask/{{ task.id }}">Complete</a> <br>
+                        <a href="/rmTask/{{ task.id }}">Remove</a><br>
+                        <a href="/editTask/{{ task.id }}">Edit</a><br>
+                    </td>
+                </tr>
+            {% endfor %}
 
         </table>
         <form action="/addTask" method="post">

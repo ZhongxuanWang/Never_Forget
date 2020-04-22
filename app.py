@@ -22,9 +22,10 @@ class TODO(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        return "hello38"
+        return redirect('issues/404.html')
     elif request.method == 'GET':
-        return render_template("index.html")
+        tasks = TODO.query.order_by(TODO.time_created).all()
+        return render_template("index.html", tasks=tasks)
     else:
         return "Invalid method: " + request.method
 
@@ -44,7 +45,7 @@ def addTask():
             return redirect('/issues/unable_to_add.html')
 
 
-@app.route('/rmTask', methods=['GET'])
+@app.route('/rmTask/<int:id>', methods=['GET'])
 def rmTask():
     if request.method == 'GET':
         return redirect('/')

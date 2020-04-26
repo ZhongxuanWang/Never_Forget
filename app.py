@@ -72,15 +72,14 @@ def editTask(tid):
 @app.route('/cmTask/<int:tid>', methods=['GET'])
 def cmTask(tid):
     if request.method == 'GET':
-        return redirect('/')
-    task = TODO.query.get_or_404(tid)
+        task = TODO.query.get_or_404(tid)
 
-    try:
-        db.session.delete(task)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return render_template('issues/unable_to.html', issue='complete the task')
+        try:
+            db.session.delete(task)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return render_template('issues/unable_to.html', issue='complete the task')
 
 
 if __name__ == '__main__':

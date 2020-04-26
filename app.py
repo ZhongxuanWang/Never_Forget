@@ -73,7 +73,7 @@ def editTask(tid):
 def cmTask(tid):
     if request.method == 'GET':
         return redirect('/')
-    task = TODO.query.get_or_404(id)
+    task = TODO.query.get_or_404(tid)
 
     try:
         db.session.delete(task)

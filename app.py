@@ -10,13 +10,13 @@ db = SQLAlchemy(app)
 class TODO(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
-    time_created = db.Column(db.DateTime, default=datetime.now())
+    time_created = db.Column(db.String, default=datetime.now().strftime("%b %d %Y %H:%M:%S"))
 
     def __repr__(self):
         return self.id
 
     def __str__(self):
-        return self.id
+        return self.__repr__()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -43,6 +43,8 @@ def addTask():
             return redirect('/')
         except:
             return render_template('issues/unable_to.html', issue="add the task")
+    else:
+        return render_template('issues/unable_to.html', issue="method not applicable")
 
 
 @DeprecationWarning
@@ -80,6 +82,8 @@ def cmTask(tid):
             return redirect('/')
         except:
             return render_template('issues/unable_to.html', issue='complete the task')
+    else:
+        return render_template('issues/unable_to.html', issue="method not applicable")
 
 
 if __name__ == '__main__':

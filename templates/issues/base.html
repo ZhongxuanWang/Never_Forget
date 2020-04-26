@@ -7,8 +7,15 @@
     <title>Issue:{% block title %}{% endblock %} </title>
 </head>
 <body>
-<div style="text-align: center">
-    {% block body %} {% endblock %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div style="text-align: center; font-size: large">
+    {% block body %}{% endblock %}
 </div>
 <br>
 <br>
@@ -19,12 +26,20 @@
 </div>
 
 <script>
-    sleep(3000);
-    window.history.back();
-
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+{##}
+{#    async function f(ms) {#}
+{#        await new Promise(r => setTimeout(r, ms));#}
+{#    }#}
+{#    function doStuff()#}
+{#    {#}
+{#        //do some things#}
+{#         //wait ten seconds before continuing#}
+{#    }#}
+    function f() {
+        window.history.back()
     }
+    setTimeout(f, 3000)
+
 </script>
 </body>
 </html>

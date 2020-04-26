@@ -12,11 +12,17 @@ class TODO(db.Model):
     content = db.Column(db.String(500), nullable=False)
     time_created = db.Column(db.String, default=datetime.now().strftime("%b %d %Y %H:%M:%S"))
 
+    # TODO time_due
+
     def __repr__(self):
         return self.id
 
     def __str__(self):
         return self.__repr__()
+
+    def getTimeColor(self):
+        # TODO Add the method content
+        return 'red'
 
 
 @app.route('/', methods=['GET', 'POST'])

@@ -54,7 +54,7 @@ def rmTask(): pass
 
 @app.route('/editTask/<int:tid>', methods=['POST', 'GET'])
 def editTask(tid):
-    task = TODO.query.get_or_404(id)
+    task = TODO.query.get_or_404(tid)
 
     if request.method == 'POST':
         # Accessing through form in edit

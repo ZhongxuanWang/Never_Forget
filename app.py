@@ -30,10 +30,10 @@ def index():
         return "Invalid method: " + request.method
 
 
-@app.route('/addTask', methods=['POST'])
-def addTask():
+@app.route('/addTask/<content>', methods=['POST'])
+def addTask(content):
     if request.method == 'POST':
-        content = request.form['content']
+        # content = request.form['content']
         task = TODO(content=content)
 
         # Add to database

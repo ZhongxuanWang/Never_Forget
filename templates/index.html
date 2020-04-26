@@ -22,7 +22,7 @@
 {#        The language here is called jinja btw#}
             {% for task in tasks %}
                 <tr>
-                    <td>{{ task.content }}</td>
+                    <td style="border: 3px solid green;">{{ task.content }}</td>
                     <td>{{ task.time_created }}</td>
                     <td>
                         <a href="/cmTask/{{ task.id }}">Complete</a> <br>
@@ -33,11 +33,27 @@
             {% endfor %}
 
         </table>
-        <form action="/addTask" method="post">
-                <input type="text" name="content" placeholder="new task">
+        <form action="javascript:submit()">
+                <input type="text" name="content" placeholder="new task" id="content">
                 <input type="submit" class="submitbtn" value="Add Task">
         </form>
     </div>
+    <script lang="javascript">
+        {#    var declarations are globally scoped or function scoped while let and const are block scoped.
+        var variables can be updated and re-declared within its scope; let variables can be updated but not
+        re-declared; const variables can neither be updated nor re-declared.#}
+        function submit() {
+            const cont = document.getElementById('content').value;
+            if(cont === '') {
+                alert("You must add some content")
+            } else {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", '/addTask/' + cont, false);
+                xhr.send();
+                location.reload();
+            }
+        }
+    </script>
 
 {% endblock %}
 

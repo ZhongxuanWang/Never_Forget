@@ -52,14 +52,25 @@ def rmTask(): pass
 #         return redirect('/')
 
 
-@app.route('/editTask/<int:id>', methods=['GET'])
-def editTask(id):
-    if request.method == 'GET':
-        return redirect('/')
+@app.route('/editTask/<int:tid>', methods=['POST', 'GET'])
+def editTask(tid):
+    task = TODO.query.get_or_404(id)
+
+    if request.method == 'POST':
+        # Accessing through form in edit
+        task.content = request.form['content']
+
+        try:
+            db.session.commit()
+            return redirect('/')
+        except:
+            return render_template('issues/unable_to.html', issue="edit task")
+    else:
+        return render_template('edit.html', task=task)
 
 
-@app.route('/cmTask/<int:id>', methods=['GET'])
-def cmTask(id):
+@app.route('/cmTask/<int:tid>', methods=['GET'])
+def cmTask(tid):
     if request.method == 'GET':
         return redirect('/')
     task = TODO.query.get_or_404(id)

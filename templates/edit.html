@@ -4,14 +4,22 @@
 {% endblock %}
 
 {% block body %}
-<div class="content">
-    <h1 style="text-align: center">Edit Task</h1>
+    <div class="content">
+        <h1 style="text-align: center">Edit Task</h1>
+        <hr>
 
-    <div class="form">
-        <form action="/editTask/{{task.id}}" method="POST">
-            <input type="text" name="content" id="content" value="{{task.content}}">
-            <input type="submit" value="Update">
-        </form>
+        {#    TODO Use js to check if the content is empty or the date is invalid#}
+
+        <div class="form">
+            <form action="/editTask/{{ task.id }}" method="POST">
+                <input type="text" name="content" id="content" value="{{ task.content }}">
+                <input type="datetime-local" name="date" placeholder="{{ task.time_due }}" id="date"
+                       value="{{ task.time_due }}">
+                <input type="submit" class="submitbtn" value="Change">
+            </form>
+        </div>
     </div>
-</div>
+    <script>
+
+    </script>
 {% endblock %}

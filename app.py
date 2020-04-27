@@ -4,15 +4,21 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///list.db'
+# Remember, everytime you make changes to the colum (such as adding one col or removing one col, change the value),
+# you have to do the following: open terminal from pycharm, python3.7, from app import db, db.create_all() and exit.
 db = SQLAlchemy(app)
 
+
+# TODO send email warning if the due time is so soon and still incomplete,
 
 class TODO(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
-    time_created = db.Column(db.String, default=datetime.now().strftime("%b %d %Y %H:%M:%S"))
 
-    # TODO time_due
+    time_created_str = datetime.now().strftime("%B %d %Y %H:%M:%S")
+
+    time_created = db.Column(db.String, default=time_created_str)
+    time_due = db.Column(db.String(500), nullable=False)
 
     def __repr__(self):
         return self.id
@@ -21,8 +27,14 @@ class TODO(db.Model):
         return self.__repr__()
 
     def getTimeColor(self):
-        # TODO Add the method content
+        # time_dif = self.get_time_difference()
         return 'red'
+
+    def get_time_difference(self):
+        # year_dif = int(self.time_due[7:11]) - int(self.time_created_str[7:11])
+        # month_dif = int(self.time_due[])
+        # self.time_due[]
+        return ""
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -39,11 +51,11 @@ def index():
         return "Invalid method: " + request.method
 
 
-@app.route('/addTask/<content>', methods=['POST'])
-def addTask(content):
+@app.route('/addTask/<content>/<date>', methods=['POST'])
+def addTask(content, date):
     if request.method == 'POST':
         # content = request.form['content']
-        task = TODO(content=content)
+        task = TODO(content=content, time_due=date)
 
         # Add to database
         try:
@@ -70,6 +82,7 @@ def editTask(tid):
     if request.method == 'POST':
         # Accessing through form in edit
         task.content = request.form['content']
+        task.time_due = request.form['date']
 
         try:
             db.session.commit()

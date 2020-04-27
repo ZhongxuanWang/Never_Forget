@@ -40,10 +40,10 @@ body {
 
 /* Style the footer */
 .footer {
+    line-height: 3px;
     text-align: center;
     border: 2px solid green;
     background-color: #f1f1f1;
-    padding: 10px;
 }
 
 form {

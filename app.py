@@ -31,7 +31,10 @@ def index():
         return redirect('issues/404.html')
     elif request.method == 'GET':
         tasks = TODO.query.order_by(TODO.time_created).all()
-        return render_template("index.html", tasks=tasks)
+        time_now = datetime.now().strftime("%b %d %Y %H:%M:%S")
+        return render_template("index.html", tasks=tasks, mintime=time_now,
+                               # Basically it's 100 years later.
+                               maxtime=time_now[0:7] + str(int(time_now[7:11]) + 100) + time_now[11:])
     else:
         return "Invalid method: " + request.method
 

@@ -20,6 +20,9 @@ class TODO(db.Model):
     time_created = db.Column(db.String, default=time_created_str)
     time_due = db.Column(db.String(500), nullable=False)
 
+    # By default, the email warning is enabled
+    email_warning = db.Column(db.Integer, default=1)
+
     def __repr__(self):
         return self.id
 

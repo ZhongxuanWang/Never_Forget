@@ -10,31 +10,16 @@
 
         {#    TODO Use js to check if the content is empty or the date is invalid#}
         <div class="form">
-            <form action="javascript:submit()" method="POST">
+            <form action="javascript:submit('editTask', {{ task.id }})" method="POST">
                 <input type="text" name="content" id="content" value="{{ task.content }}">
                 <input type="datetime-local" name="date" placeholder="{{ task.time_due }}" id="date"
                        value="{{ task.time_due }}">
-                <input type="checkbox" value="Email Warning" id="email_warning"
+                <input type="checkbox" id="email_warning"
                         {% if task.email_warning == 1 %} checked {% endif %}>email_warning
                 <input type="submit" class="submitbtn" value="Change">
             </form>
         </div>
     </div>
-    <script>
-        function submit() {
-            const maxtime = "" + document.getElementById('maxtime');
-            const cont = document.getElementById('content').value;
-            const date = document.getElementById('date').value;
-            if (cont === '' || date === '' || date > maxtime) {
-                alert("You must input valid content and date (within 100 years).")
-            } else {
-                {#if (cont.length > 70);#}
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", '/editTask/{{ task.id }}/' + cont + "/" + date, false);
-                xhr.send();
-                location.reload();
-            }
-        }
-
+    <script src="{{ url_for('static', filename='js/main.js') }}">
     </script>
 {% endblock %}

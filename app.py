@@ -78,22 +78,25 @@ def rmTask(): pass
 #         return redirect('/')
 
 
-@app.route('/editTask/<int:tid>', methods=['POST', 'GET'])
-def editTask(tid):
+@app.route('/editTask/<int:tid>/<content>/<date>/<email_warning>', methods=['POST'])
+def editTask(tid, content, date, email_warning):
     task = TODO.query.get_or_404(tid)
 
-    if request.method == 'POST':
-        # Accessing through form in edit
-        task.content = request.form['content']
-        task.time_due = request.form['date']
+    # Accessing through form in edit
+    task.content = content
+    task.time_due = date
+    task.email_warning = email_warning
 
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return render_template('issues/unable_to.html', issue="edit task")
-    else:
-        return render_template('edit.html', task=task)
+    try:
+        db.session.commit()
+        return redirect('/')
+    except:
+        return render_template('issues/unable_to.html', issue="edit task")
+
+
+@app.route('/editTask/<int:tid>', methods=['GET'])
+def edit_task_jump(tid):
+    return render_template('edit.html', task=TODO.query.get_or_404(tid))
 
 
 @app.route('/cmTask/<int:tid>', methods=['GET'])

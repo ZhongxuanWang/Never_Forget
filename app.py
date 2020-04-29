@@ -40,6 +40,11 @@ class TODO(db.Model):
         return ""
 
 
+def get_max_time(years):
+    time_now = datetime.now().strftime("%b %d %Y %H:%M:%S")
+    return time_now[0:7] + str(int(time_now[7:11]) + years) + time_now[11:]
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -47,9 +52,7 @@ def index():
     elif request.method == 'GET':
         tasks = TODO.query.order_by(TODO.time_created).all()
         time_now = datetime.now().strftime("%b %d %Y %H:%M:%S")
-        return render_template("index.html", tasks=tasks, mintime=time_now,
-                               # Basically it's 100 years later.
-                               maxtime=time_now[0:7] + str(int(time_now[7:11]) + 100) + time_now[11:])
+        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
     else:
         return "Invalid method: " + request.method
 
@@ -96,7 +99,7 @@ def editTask(tid, content, date, email_warning):
 
 @app.route('/editTask/<int:tid>', methods=['GET'])
 def edit_task_jump(tid):
-    return render_template('edit.html', task=TODO.query.get_or_404(tid))
+    return render_template('edit.html', task=TODO.query.get_or_404(tid), maxtime=get_max_time(100))
 
 
 @app.route('/cmTask/<int:tid>', methods=['GET'])

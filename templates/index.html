@@ -33,7 +33,7 @@
             {% endfor %}
 
         </table>
-        <form action="javascript:submit('addTask', {{ task.id }})">
+        <form action="javascript:submit()">
             <input type="text" name="content" placeholder="new task" id="content">
             <input type="datetime-local" name="date" placeholder="{{ mintime }}" id="date" min="{{ mintime }}"
                    max="{{ maxtime }}" value="{{ mintime }}">
@@ -41,8 +41,27 @@
         </form>
         <label id="maxtime" class="invisible">{{ maxtime }}</label>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}">
+    {#    <script src="{{ url_for('static', filename='js/main.js') }}"> </script>#}
+    <script lang="javascript">
 
+        {#    var declarations are globally scoped or function scoped while let and const are block scoped.
+        var variables can be updated and re-declared within its scope; let variables can be updated but not
+        re-declared; const variables can neither be updated nor re-declared.#}
+
+        function submit() {
+            const maxtime = "" + document.getElementById('maxtime');
+            const cont = document.getElementById('content').value;
+            const date = document.getElementById('date').value;
+            if (cont === '' || date === '' || date > maxtime) {
+                alert("You must input valid content and date (within 100 years).")
+            } else {
+                {#if (cont.length > 70);#}
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", '/addTask/' + cont + "/" + date, false);
+                xhr.send();
+                location.reload();
+            }
+        }
     </script>
 
 {% endblock %}

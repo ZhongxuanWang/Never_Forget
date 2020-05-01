@@ -74,13 +74,6 @@ def addTask(content, date):
         return render_template('issues/unable_to.html', issue="method not applicable")
 
 
-@DeprecationWarning
-# @app.route('/rmTask/<int:id>', methods=['GET'])
-def rmTask(): pass
-#     if request.method == 'GET':
-#         return redirect('/')
-
-
 @app.route('/editTask/<int:tid>/<content>/<date>/<email_warning>', methods=['POST'])
 def editTask(tid, content, date, email_warning):
     task = TODO.query.get_or_404(tid)

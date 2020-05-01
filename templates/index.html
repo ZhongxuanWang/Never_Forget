@@ -30,7 +30,7 @@
                         <div style="color: red"> Disabled</div>{% endif %} </td>
                     <td>
                         <a href="/cmTask/{{ task.id }}">Complete</a> <br>
-                        <a href="/editTask/{{ task.id }}">Edit</a><br>
+                        <a href="/editTask/{{ task.id }}">Get Info</a><br>
                     </td>
                 </tr>
             {% endfor %}
@@ -53,7 +53,7 @@
 
         function submit() {
             const maxtime = "" + document.getElementById('maxtime');
-            const cont = document.getElementById('content').value;
+            const cont = document.getElementById('content').value.trim();
             const date = document.getElementById('date').value;
             if (cont === '' || date === '' || date > maxtime) {
                 alert("You must input valid content and date (within 100 years).")

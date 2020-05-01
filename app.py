@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///list.db'
-# Remember, everytime you make changes to the colum (such as adding one col or removing one col, change the value),
+# Remember, every time you make changes to the column (such as adding one col or removing one col, change the value),
 # you have to do the following: open terminal from pycharm, python3.7, from app import db, db.create_all() and exit.
 db = SQLAlchemy(app)
 

@@ -39,7 +39,7 @@
                 {#location.reload();#}
 
                 // Jump back. It finally works here.....
-                var href = document.location.href;
+                let href = document.location.href;
                 href = href.substring(0, href.indexOf("/editTask"));
                 document.location = href;
                 {#window.history.back();#}

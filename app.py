@@ -76,8 +76,8 @@ def index():
 
 @app.route('/addTask/<content>/<date>', methods=['POST'])
 def addTask(content, date):
-    if request.method == 'POST': \
-            # content = request.form['content']
+    if request.method == 'POST':
+        # content = request.form['content']
         task = TODO(content=content, time_due=date)
 
         # Add to database

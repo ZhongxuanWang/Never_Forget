@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+    <form action="javascript:submit()">
+        <input type="text" name="content" placeholder="Email Address" value="{{ email }}" id="email">
+        <input type="submit" class="submitbtn" value="Set Email">
+    </form>
+
+
+
+    <script lang="javascript">
+        {#    var declarations are globally scoped or function scoped while let and const are block scoped.
+        var variables can be updated and re-declared within its scope; let variables can be updated but not
+        re-declared; const variables can neither be updated nor re-declared.#}
+
+        function submit() {
+            const cont = document.getElementById('email').value.trim();
+            if (cont === '' || !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(cont))) {
+                alert("You must input a valid email address")
+            } else {
+                {#if (cont.length > 70);#}
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", '/setting/' + cont, false);
+                xhr.send();
+                location.reload();
+                let href = document.location.href;
+                href = href.substring(0, href.indexOf("/setting"));
+                document.location = href;
+            }
+        }
+    </script>
+
+{% endblock %}

@@ -1,6 +1,9 @@
 from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta, date
+import smtplib
+
+__author__ = 'Zhongxuan Wang'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///list.db'
@@ -41,8 +44,22 @@ class TODO(db.Model):
 
 
 def get_max_time(years):
-    time_now = datetime.now().strftime("%b %d %Y %H:%M:%S")
+    time_now = datetime.now().strftime("%b %d %Y %H:%M")
     return time_now[0:7] + str(int(time_now[7:11]) + years) + time_now[11:]
+
+
+'''
+This will return a new date & time that after adding the values in time dictionaries
+'''
+
+
+def get_time(**time):
+    time_now = datetime.now()
+
+    datetime_format = '%b-%d-%Y %H:%M'
+    time_now = datetime.strptime(time_now, datetime_format)
+    time_des = f"{time['year'] + time_now}-{time['month']}-{time['day']} {time['hour']}:{time['minute']}"
+    return
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -51,7 +68,7 @@ def index():
         return redirect('issues/404.html')
     elif request.method == 'GET':
         tasks = TODO.query.order_by(TODO.time_created).all()
-        time_now = datetime.now().strftime("%b %d %Y %H:%M:%S")
+        time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
         return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
     else:
         return "Invalid method: " + request.method
@@ -59,8 +76,8 @@ def index():
 
 @app.route('/addTask/<content>/<date>', methods=['POST'])
 def addTask(content, date):
-    if request.method == 'POST':
-        # content = request.form['content']
+    if request.method == 'POST': \
+            # content = request.form['content']
         task = TODO(content=content, time_due=date)
 
         # Add to database
@@ -108,6 +125,31 @@ def cmTask(tid):
             return render_template('issues/unable_to.html', issue='complete the task')
     else:
         return render_template('issues/unable_to.html', issue="method not applicable")
+
+
+@app.route('/setting/<email>', methods=['POST'])
+def setting(email):
+    write_read_file('email.cfg', 'email')
+    return render_template('index.html')
+
+
+@app.route('/setting/', methods=['GET'])
+def setting_redirect():
+    email = '' + write_read_file('email.cfg', 'email@example.com')
+    return render_template('setting.html', email=email)
+
+
+def write_read_file(filename, filecontent):
+    try:
+        with open(filename) as f:
+            return f.readline()
+    except IOError:
+        print("IOERROR")
+        # Write file
+        f = open(filename, "w")
+        f.write(filecontent)
+        f.close()
+        return 'content'
 
 
 if __name__ == '__main__':

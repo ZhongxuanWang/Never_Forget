@@ -1,10 +1,11 @@
 from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta, date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import smtplib
+from demail import demail
 
 __author__ = 'Zhongxuan Wang'
+__doc__ = 'Never Forget online remainder'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///list.db'
@@ -14,6 +15,12 @@ db = SQLAlchemy(app)
 db.create_all()
 
 datetime_format = '%b-%d-%Y %H:%M'
+
+'''
+This part requires your email information in order to receive email notifications. (This is left blank intentionally)
+'''
+email_account = ''
+email_password = ''
 
 
 # TODO send email warning if the due time is so soon and still incomplete,
@@ -27,8 +34,8 @@ class TODO(db.Model):
     time_created = db.Column(db.String, default=time_created_str)
     time_due = db.Column(db.String(500), nullable=False)
 
-    # By default, the email warning is enabled
-    email_warning = db.Column(db.Integer, default=1)
+    # By default, the email warning is disabled
+    email_warning = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return self.id
@@ -53,17 +60,18 @@ class TODO(db.Model):
             return "#ffff00"
         # >3h
         elif time_dif['seconds'] >= 10800:
+            send_email(self)
             return "#ffbf00"
         # >1h
         elif time_dif['seconds'] >= 3600:
+            send_email(self)
             return "#ff8000"
         else:
+            send_email(self)
             return "#ff0000"
 
     def get_time_difference(self):
-        time_now = datetime.now().replace(microsecond=0)
-        diff = datetime.strptime(self.time_due.__str__(), datetime_format) - time_now
-        return {'days': diff.days, 'seconds': diff.seconds}
+        return get_time_difference(datetime.strptime(self.time_due.__str__(), datetime_format))
 
 
 '''
@@ -79,6 +87,12 @@ def get_time(**time):
     time_now = datetime.now() + relativedelta(hours=time['hour'], minutes=time['minute'], days=time['day'],
                                               months=time['month'], years=time['year'])
     return time_now.strftime(datetime_format)
+
+
+def get_time_difference(time):
+    time_now = datetime.now().replace(microsecond=0)
+    diff = time - time_now
+    return {'days': diff.days, 'seconds': diff.seconds}
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -99,9 +113,9 @@ def addTask(content, due_date):
     if request.method == 'POST':
         # content = request.form['content']
         try:
-            time = datetime.strptime(due_date, datetime_format)
+            datetime.strptime(due_date, datetime_format)
         except:
-            return render_template('issues/unable_to.html', issue='Create the time expected.')
+            print("The time is not in correct format")
         task = TODO(content=content, time_due=due_date)
 
         # Add to database
@@ -110,7 +124,7 @@ def addTask(content, due_date):
             db.session.commit()
             return redirect('/')
         except:
-            return render_template('issues/unable_to.html', issue="add the task")
+            print("Unable to add the task")
     else:
         return render_template('issues/unable_to.html', issue="method not applicable")
 
@@ -128,7 +142,7 @@ def editTask(tid, content, due_date, email_warning):
         db.session.commit()
         return redirect('/')
     except:
-        return render_template('issues/unable_to.html', issue="edit task")
+        print("Unable to edit the task")
 
 
 @app.route('/editTask/<int:tid>', methods=['GET'])
@@ -151,10 +165,10 @@ def cmTask(tid):
         return render_template('issues/unable_to.html', issue="method not applicable")
 
 
-@app.route('/setting/<email>', methods=['POST'])
-def setting(email):
-    write_file('email.cfg', email)
-    return render_template('index.html')
+@app.route('/setting/<email_add>', methods=['POST'])
+def setting(email_add):
+    write_file('email.cfg', email_add)
+    return ''
 
 
 @app.route('/setting/', methods=['GET'])
@@ -181,10 +195,19 @@ def write_file(filename, file_content):
             f.write(file_content)
     except IOError:
         print("IO ERROR Raised. Writing file failed,")
+    return ''
 
 
 def send_email(todo_object):
     assert isinstance(todo_object, TODO)
+    sendto = read_file('email.cfg')
+    email_obj = demail(email_account, email_password, sendto)
+    email_content = f'''
+    Subject: Your task is about to due
+    Hello, this is automatic remainder that reminds you your task {todo_object.content} will due soon''' + '''
+    ({todo_object.get_time_difference()['days']}days and {todo_object.get_time_difference()['seconds']} seconds) '''
+    email_obj.send(email_content)
+    return ''
 
 
 if __name__ == '__main__':

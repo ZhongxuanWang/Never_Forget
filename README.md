@@ -25,6 +25,4 @@ This is online remainder that features using flask, Jinja2, js  and SQLAlchemy. 
 - Simply install the dependencies by typing in the terminal below, or just use the environment, and compile the project, and you are all set!
 
 
-    pip3 install flask
-    pip3 install flask_sqlalchemy
-    pip3 install date_util
+<code>pip3 install flask flask_sqlalchemy date_util</code>

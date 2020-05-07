@@ -36,10 +36,14 @@
             {% endfor %}
 
         </table>
+        <br>
         <form action="javascript:submit()">
-            <input type="text" name="content" placeholder="new task" id="content">
-            <input type="datetime-local" name="date" placeholder="{{ mintime }}" id="date" min="{{ mintime }}"
-                   max="{{ maxtime }}" value="{{ mintime }}">
+            <label style="font-size: small">Task Name - </label><input type="text" name="content" placeholder="new task"
+                                                                       id="content">
+            <label style="font-size: small">Due Time - </label><input type="datetime-local" name="date"
+                                                                      placeholder="{{ mintime }}" id="date"
+                                                                      min="{{ mintime }}"
+                                                                      max="{{ maxtime }}" value="{{ mintime }}">
             <input type="submit" class="submitbtn" value="Quick Add">
         </form>
         <label id="maxtime" class="invisible">{{ maxtime }}</label>

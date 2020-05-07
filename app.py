@@ -19,7 +19,7 @@ class TODO(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
 
-    time_created_str = datetime.now().strftime("%B %d %Y %H:%M:%S")
+    time_created_str = datetime.now().strftime("%B-%d-%Y %H:%M:%S")
 
     time_created = db.Column(db.String, default=time_created_str)
     time_due = db.Column(db.String(500), nullable=False)
@@ -34,14 +34,33 @@ class TODO(db.Model):
         return self.__repr__()
 
     def get_time_color(self):
-        # time_dif = self.get_time_difference()
-        return 'red'
+        time_dif = self.get_time_difference()
+        if time_dif['days'] < 0 or time_dif['seconds'] < 0:
+            return 'black'
+        elif time_dif['days'] > 30:
+            return "#0000ff"
+        elif time_dif['days'] > 7:
+            return "#0080ff"
+        elif time_dif['days'] > 2:
+            return '#00ff00'
+        elif time_dif['days'] >= 1:
+            return '#bfff00'
+        # >Half day
+        elif time_dif['seconds'] >= 43200:
+            return "#ffff00"
+        # >3h
+        elif time_dif['seconds'] >= 10800:
+            return "#ffbf00"
+        # >1h
+        elif time_dif['seconds'] >= 3600:
+            return "#ff8000"
+        else:
+            return "#ff0000"
 
     def get_time_difference(self):
-        # year_dif = int(self.time_due[7:11]) - int(self.time_created_str[7:11])
-        # month_dif = int(self.time_due[])
-        # self.time_due[]
-        return ""
+        time_now = datetime.now().replace(microsecond=0)
+        diff = datetime.strptime(self.time_due.__str__(), "%b-%d-%Y %H:%M") - time_now
+        return {'days': diff.days, 'seconds': diff.seconds}
 
 
 '''
@@ -67,7 +86,7 @@ def index():
     elif request.method == 'GET':
         tasks = TODO.query.order_by(TODO.time_created).all()
         time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
-        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
+        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_time(year=100))
     else:
         return "Invalid method: " + request.method
 

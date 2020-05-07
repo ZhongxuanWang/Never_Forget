@@ -199,15 +199,20 @@ def write_file(filename, file_content):
 
 
 def send_email(todo_object):
-    assert isinstance(todo_object, TODO)
-    sendto = read_file('email.cfg')
-    email_obj = demail(email_account, email_password, sendto)
-    email_content = f'''
-    Subject: Your task is about to due
-    Hello, this is automatic remainder that reminds you your task {todo_object.content} will due soon''' + '''
-    ({todo_object.get_time_difference()['days']}days and {todo_object.get_time_difference()['seconds']} seconds) '''
-    email_obj.send(email_content)
-    return ''
+    pass
+    #   THIS FUNCTION MUST BE ENABLED MANUALLY
+    #   THIS FUNCTION MUST BE ENABLED MANUALLY
+    #   THIS FUNCTION MUST BE ENABLED MANUALLY
+
+    # assert isinstance(todo_object, TODO)
+    # sendto = read_file('email.cfg')
+    # email_obj = demail(email_account, email_password, sendto)
+    # email_content = f'''
+    # Subject: Your task is about to due
+    # Hello, this is automatic remainder that reminds you your task {todo_object.content} will due soon''' + '''
+    # ({todo_object.get_time_difference()['days']}days and {todo_object.get_time_difference()['seconds']} seconds) '''
+    # email_obj.send(email_content)
+    # return ''
 
 
 if __name__ == '__main__':

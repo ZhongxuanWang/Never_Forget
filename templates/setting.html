@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+    <h1 style="text-align: center">Project Setting</h1>
 
 
     <form action="javascript:submit()">
@@ -16,7 +17,7 @@
 
         function submit() {
             const cont = document.getElementById('email').value.trim();
-            if (cont === '' || !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(cont))) {
+            if (cont === '' || !(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(cont))) {
                 alert("You must input a valid email address")
             } else {
                 {#if (cont.length > 70);#}

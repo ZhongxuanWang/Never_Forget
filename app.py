@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
 import smtplib
 
 __author__ = 'Zhongxuan Wang'
@@ -44,7 +45,7 @@ class TODO(db.Model):
 
 
 def get_max_time(years):
-    time_now = datetime.now().strftime("%b %d %Y %H:%M")
+    time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
     return time_now[0:7] + str(int(time_now[7:11]) + years) + time_now[11:]
 
 
@@ -54,12 +55,10 @@ This will return a new date & time that after adding the values in time dictiona
 
 
 def get_time(**time):
-    time_now = datetime.now()
-
+    time_now = datetime.now() + relativedelta(hours=time['hour'], minutes=time['minute'], days=time['day'],
+                                              months=time['month'], years=time['year'])
     datetime_format = '%b-%d-%Y %H:%M'
-    time_now = datetime.strptime(time_now, datetime_format)
-    time_des = f"{time['year'] + time_now}-{time['month']}-{time['day']} {time['hour']}:{time['minute']}"
-    return
+    return time_now.strftime(datetime_format)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -74,11 +73,11 @@ def index():
         return "Invalid method: " + request.method
 
 
-@app.route('/addTask/<content>/<date>', methods=['POST'])
-def addTask(content, date):
+@app.route('/addTask/<content>/<due_date>', methods=['POST'])
+def addTask(content, due_date):
     if request.method == 'POST':
         # content = request.form['content']
-        task = TODO(content=content, time_due=date)
+        task = TODO(content=content, time_due=due_date)
 
         # Add to database
         try:
@@ -91,13 +90,13 @@ def addTask(content, date):
         return render_template('issues/unable_to.html', issue="method not applicable")
 
 
-@app.route('/editTask/<int:tid>/<content>/<date>/<email_warning>', methods=['POST'])
-def editTask(tid, content, date, email_warning):
+@app.route('/editTask/<int:tid>/<content>/<due_date>/<email_warning>', methods=['POST'])
+def editTask(tid, content, due_date, email_warning):
     task = TODO.query.get_or_404(tid)
 
     # Accessing through form in edit
     task.content = content
-    task.time_due = date
+    task.time_due = due_date
     task.email_warning = email_warning
 
     try:
@@ -129,27 +128,38 @@ def cmTask(tid):
 
 @app.route('/setting/<email>', methods=['POST'])
 def setting(email):
-    write_read_file('email.cfg', 'email')
+    write_file('email.cfg', email)
     return render_template('index.html')
 
 
 @app.route('/setting/', methods=['GET'])
 def setting_redirect():
-    email = '' + write_read_file('email.cfg', 'email@example.com')
+    email = '' + read_file('email.cfg')
     return render_template('setting.html', email=email)
 
 
-def write_read_file(filename, filecontent):
+def read_file(filename):
     try:
         with open(filename) as f:
             return f.readline()
     except IOError:
-        print("IOERROR")
-        # Write file
+        print("IO ERROR Raised. Reading file failed,")
         f = open(filename, "w")
-        f.write(filecontent)
+        f.write('email@example.com')
         f.close()
         return 'content'
+
+
+def write_file(filename, file_content):
+    try:
+        with open(filename, 'w') as f:
+            f.write(file_content)
+    except IOError:
+        print("IO ERROR Raised. Writing file failed,")
+
+
+def send_email(todo_object):
+    assert isinstance(todo_object, TODO)
 
 
 if __name__ == '__main__':

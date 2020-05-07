@@ -11,6 +11,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///list.db'
 # Remember, every time you make changes to the column (such as adding one col or removing one col, change the value),
 # you have to do the following: open terminal from pycharm, python3.7, from app import db, db.create_all() and exit.
 db = SQLAlchemy(app)
+db.create_all()
+
+datetime_format = '%b-%d-%Y %H:%M'
 
 
 # TODO send email warning if the due time is so soon and still incomplete,
@@ -59,7 +62,7 @@ class TODO(db.Model):
 
     def get_time_difference(self):
         time_now = datetime.now().replace(microsecond=0)
-        diff = datetime.strptime(self.time_due.__str__(), "%b-%d-%Y %H:%M") - time_now
+        diff = datetime.strptime(self.time_due.__str__(), datetime_format) - time_now
         return {'days': diff.days, 'seconds': diff.seconds}
 
 
@@ -75,7 +78,6 @@ def get_time(**time):
             time[item] = 0
     time_now = datetime.now() + relativedelta(hours=time['hour'], minutes=time['minute'], days=time['day'],
                                               months=time['month'], years=time['year'])
-    datetime_format = '%b-%d-%Y %H:%M'
     return time_now.strftime(datetime_format)
 
 
@@ -85,8 +87,9 @@ def index():
         return redirect('issues/404.html')
     elif request.method == 'GET':
         tasks = TODO.query.order_by(TODO.time_created).all()
-        time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
-        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_time(year=100))
+        time_now = datetime.now().strftime(datetime_format)
+        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_time(year=100),
+                               display_time=get_time(hour=3))
     else:
         return "Invalid method: " + request.method
 
@@ -95,6 +98,10 @@ def index():
 def addTask(content, due_date):
     if request.method == 'POST':
         # content = request.form['content']
+        try:
+            time = datetime.strptime(due_date, datetime_format)
+        except:
+            return render_template('issues/unable_to.html', issue='Create the time expected.')
         task = TODO(content=content, time_due=due_date)
 
         # Add to database
@@ -181,4 +188,4 @@ def send_email(todo_object):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

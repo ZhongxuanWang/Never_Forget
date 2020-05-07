@@ -62,16 +62,14 @@ def get_time(**time):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print(get_time(day=2920))
-    return "a"
-    # if request.method == 'POST':
-    #     return redirect('issues/404.html')
-    # elif request.method == 'GET':
-    #     tasks = TODO.query.order_by(TODO.time_created).all()
-    #     time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
-    #     return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
-    # else:
-    #     return "Invalid method: " + request.method
+    if request.method == 'POST':
+        return redirect('issues/404.html')
+    elif request.method == 'GET':
+        tasks = TODO.query.order_by(TODO.time_created).all()
+        time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
+        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
+    else:
+        return "Invalid method: " + request.method
 
 
 @app.route('/addTask/<content>/<due_date>', methods=['POST'])

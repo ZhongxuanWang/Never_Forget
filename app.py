@@ -44,17 +44,16 @@ class TODO(db.Model):
         return ""
 
 
-def get_max_time(years):
-    time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
-    return time_now[0:7] + str(int(time_now[7:11]) + years) + time_now[11:]
-
-
 '''
 This will return a new date & time that after adding the values in time dictionaries
 '''
 
 
 def get_time(**time):
+    # TODO could I optimize those statements using comprehension for?
+    for item in ['hour', 'minute', 'day', 'month', 'year']:
+        if item not in time:
+            time[item] = 0
     time_now = datetime.now() + relativedelta(hours=time['hour'], minutes=time['minute'], days=time['day'],
                                               months=time['month'], years=time['year'])
     datetime_format = '%b-%d-%Y %H:%M'
@@ -63,14 +62,16 @@ def get_time(**time):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        return redirect('issues/404.html')
-    elif request.method == 'GET':
-        tasks = TODO.query.order_by(TODO.time_created).all()
-        time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
-        return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
-    else:
-        return "Invalid method: " + request.method
+    print(get_time(day=2920))
+    return "a"
+    # if request.method == 'POST':
+    #     return redirect('issues/404.html')
+    # elif request.method == 'GET':
+    #     tasks = TODO.query.order_by(TODO.time_created).all()
+    #     time_now = datetime.now().strftime("%b-%d-%Y %H:%M")
+    #     return render_template("index.html", tasks=tasks, mintime=time_now, maxtime=get_max_time(100), reload='1')
+    # else:
+    #     return "Invalid method: " + request.method
 
 
 @app.route('/addTask/<content>/<due_date>', methods=['POST'])
@@ -108,7 +109,7 @@ def editTask(tid, content, due_date, email_warning):
 
 @app.route('/editTask/<int:tid>', methods=['GET'])
 def edit_task_jump(tid):
-    return render_template('edit.html', task=TODO.query.get_or_404(tid), maxtime=get_max_time(100))
+    return render_template('edit.html', task=TODO.query.get_or_404(tid), maxtime=get_time(year=100))
 
 
 @app.route('/cmTask/<int:tid>', methods=['GET'])

@@ -1,6 +1,6 @@
 
-# Never_Forget ![INDEX Page](img/NF_index.png)  
-![editpage](img/edit.png)  
+# Never_Forget 
+![INDEX Page](img/NF_index.png)    
 [Click here to download!](https://github.com/ZhongxuanWang/simple_web_remainder-python/archive/master.zip)  
 ## Introduction:  
   
@@ -12,7 +12,7 @@ This is online remainder that features using flask, Jinja2, js  and SQLAlchemy. 
 - Send email notifications automatically when one task is pending.  
 - View how urgent some tasks are by looking at the color of the due date.  
 - Highly flexible in settings, and info for individual tasks  
-  
+  ![editpage](img/edit.png)
   
   
 ## Benifits:  

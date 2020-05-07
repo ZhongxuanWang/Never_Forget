@@ -33,7 +33,7 @@ class TODO(db.Model):
     def __str__(self):
         return self.__repr__()
 
-    def getTimeColor(self):
+    def get_time_color(self):
         # time_dif = self.get_time_difference()
         return 'red'
 

@@ -24,7 +24,7 @@
             {% for task in tasks %}
                 <tr>
                     <td style="border: 3px solid green; width: 55%; overflow: hidden;">{{ task.content }}</td>
-                    <td style="border: 3px solid {{ task.getTimeColor() }}; white-space: pre-wrap">{{ task.time_due }}</td>
+                    <td style="border: 3px solid {{ task.get_time_color() }}; white-space: pre-wrap">{{ task.time_due }}</td>
                     <td style="width: 10%">{% if task.email_warning == 1 %}
                         <div style="color:green"> Enabled</div> {% else %}
                         <div style="color: red"> Disabled</div>{% endif %} </td>
